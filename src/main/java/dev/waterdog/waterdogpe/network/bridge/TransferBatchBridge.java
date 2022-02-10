@@ -74,10 +74,7 @@ public class TransferBatchBridge extends AbstractDownstreamBatchBridge {
             this.free();
             return;
         }
-        
-        if (this.packetQueue.size() < 40000) {
-            this.player.getLogger().warning("TransferBatchBridge packet queue:  " + this.packetQueue.size() + " von " + this.player.getName());
-        }
+        this.player.getLogger().warning("TransferBatchBridge packet queue:  " + this.packetQueue.size() + " von " + this.player.getName());
 
         Collection<BedrockPacket> outboundQueue = new ObjectArrayList<>();
         BedrockPacket packet;
