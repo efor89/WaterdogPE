@@ -66,12 +66,17 @@ public class TransferBatchBridge extends AbstractDownstreamBatchBridge {
             return;
         }
 
-        if (this.packetQueue.size() >= 8048) {
+        if (this.packetQueue.size() >= 40000) {
             this.player.getLogger().warning("TransferBatchBridge packet queue is too large! Got " + this.packetQueue.size() + " packets with " + this.player.getName());
             this.player.disconnect("Transfer packet queue got too large!");
             // Deallocate packet queue manually because result of TransferBatchBridge#release called
             // from disconnect handler can be ignored as BatchHandler can be already changed.
             this.free();
+            return;
+        }
+
+        if (this.packetQueue.size() < 40000) {
+            this.player.getLogger().warning("TransferBatchBridge packet queue:  " + this.packetQueue.size() + " von " + this.player.getName());
             return;
         }
 
