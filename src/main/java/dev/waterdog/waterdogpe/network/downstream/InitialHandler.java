@@ -18,6 +18,7 @@ package dev.waterdog.waterdogpe.network.downstream;
 import com.nimbusds.jwt.SignedJWT;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
+import dev.waterdog.waterdogpe.event.defaults.InitialServerConnectedEvent;
 import dev.waterdog.waterdogpe.network.serverinfo.ServerInfo;
 import dev.waterdog.waterdogpe.network.protocol.ProtocolVersion;
 import dev.waterdog.waterdogpe.network.rewrite.BlockMap;
@@ -47,7 +48,7 @@ public class InitialHandler extends AbstractDownstreamHandler {
         return this.onPlayStatus(packet, message -> {
             ServerInfo serverInfo = this.player.getServerInfo();
             if (!this.player.sendToFallback(serverInfo, message)) {
-                this.player.disconnect(new TranslationContainer("waterdog.connected.fallback", serverInfo.getServerName(), message));
+                this.player.disconnect(new TranslationContainer("waterdog.downstream.transfer.failed", serverInfo.getServerName(), message));
             }
         }, this.client.getSession());
     }
@@ -123,7 +124,10 @@ public class InitialHandler extends AbstractDownstreamHandler {
 
         int blockingId = client.getSession().getHardcodedBlockingId();
         this.player.getUpstream().getHardcodedBlockingId().set(blockingId);
+
         this.client.getSession().onInitialServerConnected(player);
+        this.player.getProxy().getEventManager().callEvent(new InitialServerConnectedEvent(this.player, this.client));
+
         return true;
     }
 }
